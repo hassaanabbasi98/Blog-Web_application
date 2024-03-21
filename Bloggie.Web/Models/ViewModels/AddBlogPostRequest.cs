@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Design.Serialization;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
-namespace Bloggie.Web.Models.Domain
+namespace Bloggie.Web.Models.ViewModels
 {
-    public class BlogPost
+    public class AddBlogPostRequest
     {
-        [Required]
-        public Guid Id { get; set; }
         public String Heading { get; set; }
         public String PageTitle { get; set; }
         public String Content { get; set; }
@@ -15,9 +13,11 @@ namespace Bloggie.Web.Models.Domain
         public String UrlHandle { get; set; }
         public DateTime PublishedDate { get; set; }
         public String Author { get; set; }
-        public bool Visible {  get; set; } 
+        public bool Visible { get; set; }
 
-        //Navigation Property
-        public ICollection<Tag> Tags { get; set; }
+        //Display Tags
+        public IEnumerable<SelectListItem> Tags { get; set; }
+        // Collect Tags
+        public string[] SelectedTags { get; set; } = Array.Empty<string>();
     }
 }

@@ -1,4 +1,5 @@
 using Bloggie.Web.Data;
+using Bloggie.Web.Respositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BloggieDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString"))); // That's how you inject the Db Context inside the Services of our application
+
+builder.Services.AddScoped<ITagRepository, TagRepository >();
+builder.Services.AddScoped< IBlogPostRepository, BlogPostRepository>();
 
 var app = builder.Build();
 
