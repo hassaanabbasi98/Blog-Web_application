@@ -15,7 +15,7 @@ namespace Bloggie.Web.Models.Domain
         public String UrlHandle { get; set; }
         public DateTime PublishedDate { get; set; }
         public String Author { get; set; }
-        public bool Visible {  get; set; } 
+        public bool Visible {  get; set; } // This property is if the blog is visible or not
 
         //Navigation Property
         public ICollection<Tag> Tags { get; set; }

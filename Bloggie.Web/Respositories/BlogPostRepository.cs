@@ -13,40 +13,67 @@ namespace Bloggie.Web.Respositories
             this.bloggieDbContext = bloggieDbContext;
         }
 
-        
 
-       public async Task<BlogPost> AddAsync(BlogPost blogPost)
+
+        public async Task<BlogPost> AddAsync(BlogPost blogPost)
         {
-           await bloggieDbContext.AddAsync(blogPost);
+            await bloggieDbContext.AddAsync(blogPost);
             await bloggieDbContext.SaveChangesAsync();
             return blogPost;
         }
 
-        Task<BlogPost?> IBlogPostRepository.DeleteAsync(Guid id)
+        async Task<BlogPost?> IBlogPostRepository.DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+         var existingBlog =     await bloggieDbContext.BlogPosts.FindAsync(id);
+            
+            if(existingBlog != null)
+            {
+                bloggieDbContext.BlogPosts.Remove(existingBlog); // checking if there's a blog and if it's there remove the blog
+                await bloggieDbContext.SaveChangesAsync();
+                return existingBlog;
+            }
+            return existingBlog;
         }
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-          return await bloggieDbContext.BlogPosts.Include(x => x.Tags).ToListAsync();
+            return await bloggieDbContext.BlogPosts.Include(x => x.Tags).ToListAsync();
         }
 
 
         public async Task<BlogPost?> GetAsync(Guid id)
         {
-          return await bloggieDbContext.BlogPosts.Include(x => x.Tags).FirstOrDefaultAsync(x => x.Id == id) ;
+            return await bloggieDbContext.BlogPosts.Include(x => x.Tags).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<BlogPost?> UpdateAsync(BlogPost blogPost)
+        public async Task<BlogPost?> UpdateAsync(BlogPost blogPost)
         {
-            throw new NotImplementedException();
+            var existingBlog = await bloggieDbContext.BlogPosts.Include(x => x.Tags).FirstOrDefaultAsync(x => x.Id != blogPost.Id); // finding the Tag if it's there by Blog Id using lamda function 
+
+            if (existingBlog != null) // updating it into the DataBase
+            {
+
+
+                existingBlog.Id = blogPost.Id;
+                existingBlog.Content = blogPost.Content;
+                existingBlog.ShortDescription = blogPost.ShortDescription;
+                existingBlog.Author = blogPost.Author;
+                existingBlog.FeaturedImageURL = blogPost.FeaturedImageURL;
+                existingBlog.UrlHandle = blogPost.UrlHandle;
+                existingBlog.Visible = blogPost.Visible;
+                existingBlog.PublishedDate = blogPost.PublishedDate;
+                existingBlog.Tags = blogPost.Tags;
+
+                await bloggieDbContext.SaveChangesAsync();
+                return existingBlog;
+            }
+            return null;
         }
 
-      
-        Task<BlogPost?> IBlogPostRepository.UpdateAsync(BlogPost blogPost)
+        public async Task<BlogPost?> GetByUrlHandleAsync(string urlHandle)
         {
-            throw new NotImplementedException();
+          return  await bloggieDbContext.BlogPosts.Include( x => x.Tags).FirstOrDefaultAsync( x => x.UrlHandle == urlHandle );
         }
     }
 }
+

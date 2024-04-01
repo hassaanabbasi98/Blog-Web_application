@@ -9,7 +9,7 @@ namespace Bloggie.Web.Models.ViewModels
         public String PageTitle { get; set; }
         public String Content { get; set; }
         public String ShortDescription { get; set; }
-        public String FeaturedImageURL { get; set; }
+        public String FeaturedImageUrl { get; set; }
         public String UrlHandle { get; set; }
         public DateTime PublishedDate { get; set; }
         public String Author { get; set; }

@@ -39,9 +39,9 @@ namespace Bloggie.Web.Respositories
            
         }
 
-        public Task<Tag?> GetAsync(Guid id)
+        public async Task<Tag?> GetAsync(Guid id)
         {
-         return   bloggieDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
+         return  await bloggieDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<Tag?> UpdateAsync(Tag tag)
         {

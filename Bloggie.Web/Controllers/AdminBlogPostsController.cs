@@ -4,6 +4,7 @@ using Bloggie.Web.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+
 namespace Bloggie.Web.Controllers
 {
     public class AdminBlogPostsController : Controller
@@ -45,7 +46,7 @@ namespace Bloggie.Web.Controllers
                 PageTitle = addBlogPostRequest.PageTitle,
                 Content = addBlogPostRequest.Content,
                 ShortDescription = addBlogPostRequest.ShortDescription,
-                FeaturedImageURL = addBlogPostRequest.FeaturedImageURL,
+                FeaturedImageURL = addBlogPostRequest.FeaturedImageUrl,
                 UrlHandle = addBlogPostRequest.UrlHandle,
                 PublishedDate = addBlogPostRequest.PublishedDate,
                 Author = addBlogPostRequest.Author,
@@ -116,6 +117,69 @@ namespace Bloggie.Web.Controllers
             }
             else
             return View(null);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit (EditBlogPostRequest editBlogPostRequest)
+        {
+            //Mapping view model to domain Model to update the Blog changes made
+            var blogPostDomainModel = new BlogPost
+            {
+                Id = editBlogPostRequest.Id,
+                Heading = editBlogPostRequest.Heading,
+                PageTitle = editBlogPostRequest.PageTitle,
+                Content = editBlogPostRequest.Content,
+                Author = editBlogPostRequest.Author,
+                ShortDescription = editBlogPostRequest.ShortDescription,
+                FeaturedImageURL = editBlogPostRequest.FeaturedImageURL,
+                PublishedDate = editBlogPostRequest.PublishedDate,
+                UrlHandle = editBlogPostRequest.UrlHandle,
+                Visible = editBlogPostRequest.Visible
+
+            };
+            var SelectedTags = new List<Tag>();  // updateing the select tags along with the BlogPost
+            
+                foreach(var selectedTag in editBlogPostRequest.SelectedTags)
+                {
+                    if(Guid.TryParse(selectedTag, out var tag))
+                    {
+                        var foundTag = await tagRepository.GetAsync(tag);
+                        if(foundTag != null) {
+                            SelectedTags.Add(foundTag);
+                        }
+                    }
+                
+            }
+
+            blogPostDomainModel.Tags = SelectedTags;
+
+            // submit information to repository to update
+         var updatedBlog =   await  blogPostRepository.UpdateAsync(blogPostDomainModel);
+
+            if(updatedBlog != null)
+            {
+                // show success notification
+                return RedirectToAction("Edit");
+
+            }
+            //show error notification
+            return RedirectToAction("Edit");
+            //After Updating it will Redirect to Get
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(EditBlogPostRequest editBlogPostRequest)
+        {
+            //Talk to repository to delete this blog Post and Tags
+
+            var deletedBlogPost = await blogPostRepository.DeleteAsync(editBlogPostRequest.Id); // we are getting the blog id from the repository of database and then assinging it into the varuage
+                if (deletedBlogPost != null)
+            {
+                //show succes notification
+                return RedirectToAction("List");
+            }
+
+            //show error notification
+            return RedirectToAction("Edit", new {id = editBlogPostRequest.Id });
         }
 
     }

@@ -12,6 +12,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnect
 
 builder.Services.AddScoped<ITagRepository, TagRepository >();
 builder.Services.AddScoped< IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IIamgeRepository, CloudinaryImageRepositoryl>(); // it handles the dependency injection and their instances
 
 var app = builder.Build();
 
