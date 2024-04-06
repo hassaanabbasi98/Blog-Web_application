@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Design.Serialization;
+﻿using Bloggie.Web.Models.Domain;
 
-namespace Bloggie.Web.Models.Domain
+namespace Bloggie.Web.Models.ViewModels
 {
-    public class BlogPost
+    public class BlogDetailsViewModel
     {
-        
         public Guid Id { get; set; }
         public String Heading { get; set; }
         public String PageTitle { get; set; }
@@ -15,14 +13,16 @@ namespace Bloggie.Web.Models.Domain
         public String UrlHandle { get; set; }
         public DateTime PublishedDate { get; set; }
         public String Author { get; set; }
-        public bool Visible {  get; set; } // This property is if the blog is visible or not
+        public bool Visible { get; set; } // This property is if the blog is visible or not
 
-        //Navigation Property
         public ICollection<Tag> Tags { get; set; }
 
-        public ICollection<BlogPostLike> Likes { get; set; }
+        public int TotalLikes { get; set; }
 
+        public bool Liked {  get; set; }
 
-        public ICollection<BlogPostComment> Connents { get; set; }
+        public string CommentDescription { get; set; }
+
+        public IEnumerable<BlogComment> Comments { get; set; }
     }
 }
